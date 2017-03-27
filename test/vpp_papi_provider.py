@@ -1655,3 +1655,54 @@ class VppPapiProvider(object):
                 'is_translation': is_translation,
                 'mtu': mtu
             })
+
+    def memif_create(self,
+                     role,
+                     key,
+                     socket,
+                     ring_size,
+                     buffer_size,
+                     hw_addr):
+        """
+        Create MEMIF interface
+
+        :param key: 64bit integer used to authenticate and match opposite sides
+                    of the connection
+        :param role: role of the interface in the connection (master/slave)
+        :param socket: filename of the socket to be used for connection
+                       establishment
+        :param ring_size: the number of entries of RX/TX rings
+        :param buffer_size: size of the buffer allocated for each ring entry
+        :param hw_addr: interface MAC address
+        """
+        return self.api(
+            self.papi.memif_create,
+            {
+                'role': role,
+                'key': key,
+                'socket_filename': socket,
+                'ring_size': ring_size,
+                'buffer_size': buffer_size,
+                'hw_addr':
+                    ''.join([chr(int(i,16)) for i in hw_addr.split(':')])
+            })
+
+    def memif_delete(self,
+                     sw_if_index):
+        """
+        Delete MEMIF interface
+
+        :param sw_if_index: software index of the interface to delete
+        """
+        return self.api(
+            self.papi.memif_delete,
+            {
+                'sw_if_index': sw_if_index
+            })
+
+    def memif_dump(self):
+        """Dump MEMIF interfaces
+
+        :return: Dictionary of MEMIF interfaces
+        """
+        return self.api(self.papi.memif_dump, {})
