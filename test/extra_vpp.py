@@ -74,7 +74,7 @@ class RemoteClass(Process):
 
         # If you need the value of a remote attribute, use .get_remote_value
         method. This method is automatically called when needed in the context
-        of a remotely execute class. E.g.:
+        of a remotely executed class. E.g.:
 
         if (object.my_attribute.get_remote_value() > 20):
             object.my_attribute2 = object.my_attribute  # automatically obtained
@@ -82,7 +82,6 @@ class RemoteClass(Process):
         # Destroy the instance
         object.quit_remote()
         object.terminate()
-
     """
 
     GET = 0       # Get attribute remotely
@@ -303,11 +302,6 @@ class ExtraVpp(VppTestCase):
 
     def __init__(self):
         super(ExtraVpp, self).__init__("emptyTest")
-        # disable features unsupported in the extra VPP
-        if os.environ.has_key('STEP'):
-            del os.environ['STEP']
-        if os.environ.has_key('DEBUG'):
-            del os.environ['DEBUG']
 
     def __del__(self):
         if hasattr(self, "vpp"):
@@ -315,6 +309,17 @@ class ExtraVpp(VppTestCase):
             if cls.vpp.returncode is None:
                 cls.vpp.terminate()
                 cls.vpp.communicate()
+
+    @classmethod
+    def setUpClass(cls):
+        # disable features unsupported in the extra VPP
+        orig_env = dict(os.environ)
+        if os.environ.has_key('STEP'):
+            del os.environ['STEP']
+        if os.environ.has_key('DEBUG'):
+            del os.environ['DEBUG']
+        super(ExtraVpp, cls).setUpClass()
+        os.environ = orig_env
 
     @unittest.skip("Empty test used for initialization of extra VPP")
     def emptyTest(self):
