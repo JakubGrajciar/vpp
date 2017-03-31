@@ -329,7 +329,7 @@ class ExtraVpp(VppTestCase):
     def setTestFunctionInfo(self, name, doc):
         """
         Store the name and documentation string of currently executed test
-        in the main VPP for testing purposes.
+        in the main VPP for logging purposes.
         """
         self._testMethodName = name
         self._testMethodDoc = doc
